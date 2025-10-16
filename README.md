@@ -1,4 +1,4 @@
-# HyperDID: Hyperspectral Dehazing Image Dataset
+# HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing benchmark
 
 ## Code
 The code will be available soon.
@@ -10,4 +10,4 @@ The code will be available soon.
 **Remote sensing Synthetic Hyperspectral Paired Dehazing Image Dataset (RSyntHyperPDID):** Download links will be available.
 
 ## License
-HyperDID is released under the MIT license. See [LICENSE](LICENSE) for additional details.
+HyperHazeOff is released under the MIT license. See [LICENSE](LICENSE) for additional details.
