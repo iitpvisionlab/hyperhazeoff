@@ -4,7 +4,7 @@ Official Code for HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benc
 ## Code
 The code will be available soon.
 
-- [ ] Benchmarking pipeline on RGB and HSI versions of RRealHyperPDID *21.10.2025*
+- [ ] Benchmarking pipeline on RGB and HSI versions of RRealHyperPDID *24.10.2025*
 
 ## Datasets 
 
