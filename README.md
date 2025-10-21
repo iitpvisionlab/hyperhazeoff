@@ -4,6 +4,8 @@ Official Code for HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benc
 ## Code
 The code will be available soon.
 
+- [ ] Benchmarking pipeline on RGB and HSI versions of RRealHyperPDID *21.10.2025*
+
 ## Datasets 
 
 **Remote sensing Real-world Hyperspectral Paired Dehazing Image Dataset (RealHyperPDID): [HuggingFace](https://huggingface.co/datasets/nikos74/RRealHyperPDID).
