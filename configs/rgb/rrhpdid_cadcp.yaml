@@ -1,0 +1,9 @@
+# config.yaml
+out_dir: "/workspace/hyperhazeoff/output"  # output directory
+arch: "cadcp"  # ("dcp", "cadcp", "dehazeformer")
+device: "cpu"  # "cpu" (only) - Compute Device Type
+ckpt: None  # For classic methods - None
+data_root: "./data/source/RRealHyperPDID/CSNC"  # Path to the data source
+format: "png"  # data format ("png" for RGB, "npy" for HSI)
+batch: 1  # Only 1
+workers: 0

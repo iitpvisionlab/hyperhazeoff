@@ -1,0 +1,10 @@
+# config.yaml
+out_dir: "./output"  # output directory
+arch: "hdmba"  # (hdmba, aidtransformer, aacnet)
+device: "cpu"  # "auto", "cuda", "cpu" - Compute Device Type
+ckpt: "./weights/HSI/rshpdid/RSH_HDMba.pth"  # The Path to Weights for Neural Network Architectures
+data_root: "./data/source/RRealHyperPDID/HSI"  # Path to the data source
+format: "npy"  # data format ("png" for RGB, "npy" for HSI)
+batch: 1  # batch_size for DataLoader
+workers: 0  # num_workers for DataLoader
+in_channels: 182  # Spectral channels

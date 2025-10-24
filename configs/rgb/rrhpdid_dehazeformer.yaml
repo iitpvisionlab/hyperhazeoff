@@ -1,0 +1,10 @@
+# config.yaml
+out_dir: "./output"  # output directory
+arch: "dehazeformer_b"  # ("dcp", "cadcp", "dehazeformer")
+device: "auto"  # "auto", "cuda", "cpu" - Compute Device Type
+ckpt: "./weights/RGB/rshaze/dehazeformer-b.pth"  # The Path to Weights for Neural Network Architectures
+data_root: "./data/source/RRealHyperPDID/CSNC"  # Path to the data source
+format: "png"  # data format ("png" for RGB, "npy" for HSI)
+batch: 1  # batch_size for DataLoader
+workers: 0  # num_workers for DataLoader
+in_channels: 3
