@@ -1,0 +1,9 @@
+# .gitignore
+*.npy
+*.png
+*.json
+*.csv
+output/*
+data/* 
+.venv/
+__pycache__/
