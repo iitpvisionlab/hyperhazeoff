@@ -189,7 +189,6 @@ class AACNet(nn.Module):
     def __init__(
         self,
         in_channels=182,
-        out_channels=182,
         dim=64,
         kernel_size=3,
         padding=1,
@@ -210,9 +209,9 @@ class AACNet(nn.Module):
             in_channels, self.dim, kernel_size=1, padding=0, stride=1
         )
         self.Convd = nn.Conv2d(
-            self.dim, out_channels, kernel_size=1, padding=0, stride=1
+            self.dim, in_channels, kernel_size=1, padding=0, stride=1
         )
-        self.Convd_out = nn.Conv2d(out_channels, out_channels, 3, 1, 1)
+        self.Convd_out = nn.Conv2d(in_channels, in_channels, 3, 1, 1)
         self.cattn = PCSA(self.dim, self.dim)
         # self.acdw=AAConv( self.dim, self.dim, kernel_size=kernel_size, padding=padding, stride=stride, deploy=False)
         # self.gps=1
@@ -337,7 +336,7 @@ class AACNet(nn.Module):
 
 if __name__ == "__main__":
     net = AACNet(
-        in_dim=305, out_dim=305, kernel_size=3, padding=1, stride=1, num_blocks=5
+        in_channels=305, kernel_size=3, padding=1, stride=1, num_blocks=5
     ).cuda()
     device = torch.device("cpu")
     net.to(device)
