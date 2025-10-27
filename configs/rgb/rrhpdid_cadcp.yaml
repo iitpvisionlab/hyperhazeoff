@@ -1,5 +1,5 @@
 # config.yaml
-out_dir: "/workspace/hyperhazeoff/output"  # output directory
+out_dir: "./data/output/RGB/"  # output directory
 arch: "cadcp"  # ("dcp", "cadcp", "dehazeformer")
 device: "cpu"  # "cpu" (only) - Compute Device Type
 ckpt: None  # For classic methods - None

@@ -1,5 +1,5 @@
 # config.yaml
-out_dir: "./data/output/HD/HDMba"  # output directory
+out_dir: "./data/output/HD/"  # output directory
 arch: "hdmba"  # (hdmba, aidtransformer, aacnet)
 device: "cpu"  # "auto", "cuda", "cpu" - Compute Device Type
 ckpt: "./weights/HSI/hyperdehazing/HD_HDMba.pk"  # The Path to Weights for Neural Network Architectures

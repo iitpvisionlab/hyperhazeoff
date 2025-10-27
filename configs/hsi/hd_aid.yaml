@@ -1,5 +1,5 @@
 # config.yaml
-out_dir: "./data/output/HD/AIDtransformer"  # output directory
+out_dir: "./data/output/HD/"  # output directory
 arch: "aidtransformer"  # (hdmba, aidtransformer, aacnet)
 device: "auto"  # "auto", "cuda", "cpu" - Compute Device Type
 ckpt: "./weights/HSI/hyperdehazing/HD_AID.pth"  # The Path to Weights for Neural Network Architectures
