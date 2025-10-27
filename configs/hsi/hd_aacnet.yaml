@@ -1,0 +1,10 @@
+# config.yaml
+out_dir: "./data/output/HD/AACNet"  # output directory
+arch: "aacnet"  # (hdmba, aidtransformer, aacnet)
+device: "auto"  # "auto", "cuda", "cpu" - Compute Device Type
+ckpt: "./weights/HSI/hyperdehazing/HD_AACNet.pk"  # The Path to Weights for Neural Network Architectures
+data_root: "./data/source/RRealHyperPDID/interHSI"  # Path to the data source
+format: "npy"  # data format ("png" for RGB, "npy" for HSI)
+batch: 1  # batch_size for DataLoader
+workers: 0  # num_workers for DataLoader
+in_channels: 305  # Spectral channels
