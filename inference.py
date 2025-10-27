@@ -218,9 +218,7 @@ from typing import Any, Dict
 def parse_cli() -> Dict[str, Any]:
     p = argparse.ArgumentParser("RRHPDID inference (YAML config)")
 
-
     p.add_argument("--config", type=Path, required=True, help="YAML config file")
-
 
     p.add_argument("--data_root", type=Path, help="Root dataset directory")
     p.add_argument("--out_dir", type=Path, help="Output directory")

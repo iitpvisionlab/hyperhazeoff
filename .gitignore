@@ -2,7 +2,6 @@
 *.npy
 *.png
 *.json
-*.csv
 output/*
 data/* 
 .venv/

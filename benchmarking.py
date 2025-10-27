@@ -12,7 +12,6 @@ from tqdm import tqdm
 from PIL import Image
 
 from utils.metrics.metric import *
-from utils.data.visualization import CSSO, CSNC
 from utils.metrics.chromaticity_difference import ChromaticityDifference
 from piq import DISTS, LPIPS
 
@@ -361,7 +360,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--out-dir",
         type=Path,
-        default=Path("./output") / "metrics",
+        default=Path("./data") / "metrics",
         help="Output directory for evaluation results",
     )
     parser.add_argument(

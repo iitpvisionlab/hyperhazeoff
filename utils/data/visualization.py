@@ -253,27 +253,36 @@ def parse_arguments() -> argparse.Namespace:
         description="Generate RGB visualizations from hyperspectral images"
     )
     parser.add_argument(
-        "--input-dir", type=Path, required=True,
-        help="Directory with hyperspectral .npy files"
+        "--input-dir",
+        type=Path,
+        required=True,
+        help="Directory with hyperspectral .npy files",
     )
     parser.add_argument(
-        "--wl", type=Path, required=True,
-        help="Path to wavelengths .npy file"
+        "--wl", type=Path, required=True, help="Path to wavelengths .npy file"
     )
     parser.add_argument(
-        "--output-dir", type=Path, required=True,
-        help="Directory to save RGB visualizations"
+        "--output-dir",
+        type=Path,
+        required=True,
+        help="Directory to save RGB visualizations",
     )
     parser.add_argument(
-        "--method", type=str, choices=["csnc", "csso", "both"], default="both",
-        help="Visualization method: 'csnc' (pseudocolor), 'csso' (spectral), or 'both'"
+        "--method",
+        type=str,
+        choices=["csnc", "csso", "both"],
+        default="both",
+        help="Visualization method: 'csnc' (pseudocolor), 'csso' (spectral), or 'both'",
     )
     parser.add_argument(
-        "--patch-ids", nargs='*', default=[],
-        help="List of patch directories to process (e.g., S01C00 S02C06). If empty, process all."
+        "--patch-ids",
+        nargs="*",
+        default=[],
+        help="List of patch directories to process (e.g., S01C00 S02C06). If empty, process all.",
     )
 
     return parser.parse_args()
+
 
 def process_visualization(
     input_dir: Path,
@@ -325,7 +334,7 @@ def process_visualization(
                 # Create CSNC method directory structure
                 out_csnc = output_dir / "CSNC" / patch_id
                 out_csnc.mkdir(parents=True, exist_ok=True)
-                
+
                 rgb = CSNC(hsi, wls)
                 rgb_img = Image.fromarray((rgb * 255).astype(np.uint8))
                 out_file = out_csnc / f"{hsi_file.stem}.png"
@@ -335,11 +344,12 @@ def process_visualization(
                 # Create CSSO method directory structure
                 out_csso = output_dir / "CSSO" / patch_id
                 out_csso.mkdir(parents=True, exist_ok=True)
-                
+
                 srgb = CSSO(hsi, wls)
                 srgb_img = Image.fromarray((srgb * 255).astype(np.uint8))
                 out_file = out_csso / f"{hsi_file.stem}.png"
                 srgb_img.save(out_file)
+
 
 def main() -> None:
     """
