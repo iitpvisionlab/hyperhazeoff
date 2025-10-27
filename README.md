@@ -124,6 +124,17 @@ python3 calculate_subset_metrics.py --metrics-csv <PATH_TO_METRICS_CSV> \
 
 ```
 
+### Hyperspectral Image Visualization 
+
+This script generates RGB visualizations from hyperspectral data using different synthesis methods.
+```
+python3 utils/data/visualization.py --input-dir <PATH_TO_HSI_DATA> \
+--wl <PATH_TO_WAVELENGTHS_FILE> \
+--output-dir <PATH_TO_OUTPUT_DIR> \
+--method [csnc|csso|both]
+```
+Replace <PATH_TO_HSI_DATA> with the input hyperspectral images directory, <PATH_TO_WAVELENGTHS_FILE> with your wavelength file (`hyperhazeoff/meta/wls/wavelengths_realhyper.npy`), and <PATH_TO_OUTPUT_DIR> with the folder for saving visualizations. Set --method to csnc, csso, or both depending on the visualization method you want.
+
 ## License
 HyperHazeOff is released under the MIT license. See [LICENSE](LICENSE) for additional details.
 
