@@ -101,24 +101,19 @@ def _load_ckpt(model: torch.nn.Module, ckpt: Path, device: torch.device) -> None
 
 def save_file(dehazed: np.ndarray, filename: Union[str, Path], format: str) -> None:
     if format == "png":
-        dehazed = (
-            dehazed.astype(np.uint8)
-            if dehazed.dtype == np.uint8
-            else (dehazed * 255).astype(np.uint8)
-        )
+        if dehazed.max() <= 1.0:
+            dehazed = 255 * dehazed
         img = Image.fromarray(dehazed.astype(np.uint8))
         img.save(filename)
     else:
         np.save(filename, dehazed)
 
 
-def classic_processing(haze: torch.Tensor, cfg: Dict[str, Any]) -> List[np.ndarray,]:
-
-    haze_np = haze.cpu().squeeze(0).numpy() if torch.is_tensor(haze) else haze
+def classic_processing(haze: np.ndarray, cfg: Dict[str, Any]) -> List[np.ndarray,]:
     if cfg["arch"] == "dcp":
-        pred = dcp(haze_np)
+        pred = dcp(haze)
     elif cfg["arch"] == "cadcp":
-        pred = cadcp(haze_np)
+        pred = cadcp(haze)
     return [pred]
 
 
@@ -147,7 +142,7 @@ def run(cfg: Dict[str, Any]) -> None:
     transform: Optional[CustomTransform] = None
     device = torch.device(
         "cuda"
-        if cfg["device"] == "auto" and torch.cuda.is_available()
+        if torch.cuda.is_available() and cfg["device"] in ["auto", "cuda"]
         else cfg["device"]
     )
 
@@ -191,16 +186,15 @@ def run(cfg: Dict[str, Any]) -> None:
         haze = batch
         src = dataset.hazy_files[g_idx]
         if cfg["arch"] in ("dcp", "cadcp"):
+            haze = haze.cpu().squeeze(0).numpy()
             pred = classic_processing(haze, cfg)
             cubes = pred
         else:
-
             haze = haze.permute(0, 3, 1, 2).float()
             pred = nn_processing(haze, model, cfg, device)
             cubes = pred.cpu().permute(0, 2, 3, 1).numpy()
 
-        for l_idx, cube in enumerate(cubes):
-            idx = g_idx * cfg["batch"] + l_idx
+        for cube in cubes:
             src_list = src if isinstance(src, (tuple, list)) else [src]
             fname = src_list[0].name.replace("_hazed", "_dehazed")
 
@@ -209,10 +203,6 @@ def run(cfg: Dict[str, Any]) -> None:
             )
             out_path.mkdir(parents=True, exist_ok=True)
             save_file(cube, out_path / fname, format=cfg["format"])
-
-
-from pathlib import Path
-from typing import Any, Dict
 
 
 def parse_cli() -> Dict[str, Any]:

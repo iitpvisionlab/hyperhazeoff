@@ -77,7 +77,7 @@ python3 inference.py --config configs/rgb/rrhpdid_dcp.yaml	# Alternatives: rrhpd
 1. Perform spectral harmonization first:
 ```
 python3 utils/data/harmonization.py --input-dir ./data/source/RRealHyperPDID/HSI \
---wl_src ./meta/wls/wavelengths_realhyper.npy \
+--wl-src ./meta/wls/wavelengths_realhyper.npy \
 --wl-tgt ./meta/wls/wavelengths_hyperdehazing.npy \
 --output-dir ./data/source/RRealHyperPDID/interHSI
 ```

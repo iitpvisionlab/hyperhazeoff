@@ -1,0 +1,3 @@
+[submodule "FieldDelinateQA"]
+	path = FieldDelinateQA
+	url = https://github.com/Keiko-Chan/Delineate-Anything-RRealHyperPDID.git
