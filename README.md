@@ -2,11 +2,11 @@
 Official Code for HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benchmark. [Preprints.org](https://www.preprints.org/manuscript/202510.1565)
 
 ## Code
-The code is available in the [dev branch](https://github.com/iitpvisionlab/hyperhazeoff/tree/dev).
+The code is available in the [main branch](https://github.com/iitpvisionlab/hyperhazeoff).
 
 - [x] Benchmarking pipeline on RGB and HSI versions of RRealHyperPDID *24.10.2025*
 - [x] Visualization alghorithms, models weights trained on HyperDehazing, requirements.txt *27.10.2025*
-- [ ] Field delineation quality assessment *29.10.2025*
+- [x] Field delineation quality assessment *29.10.2025*
 
 
 ## Datasets 
