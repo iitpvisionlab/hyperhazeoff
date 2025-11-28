@@ -1,5 +1,5 @@
 # HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing benchmark
-Official Code for HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benchmark. [Preprints.org](https://www.preprints.org/manuscript/202510.1565)
+Official Code for HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benchmark. [MDPI J. Imaging](https://www.mdpi.com/2313-433X/11/12/422), [Preprints.org](https://www.preprints.org/manuscript/202510.1565).
 
 ## Code
 The code is available in the [main branch](https://github.com/iitpvisionlab/hyperhazeoff).
@@ -142,14 +142,17 @@ HyperHazeOff is released under the MIT license. See [LICENSE](LICENSE) for addit
 
 
 ```
-@article{202510.1565,
-	doi = {10.20944/preprints202510.1565.v1},
-	url = {https://doi.org/10.20944/preprints202510.1565.v1},
-	year = 2025,
-	month = {October},
-	publisher = {Preprints},
-	author = {Artem Nikonorov and Dmitry Sidorchuk and Nikita Odinets and Vladislav Volkov and Anastasia Sarycheva and Ekaterina Dudenko and Mikhail Zhidkov and Dmitry Nikolaev},
-	title = {HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benchmark},
-	journal = {Preprints}
+@Article{jimaging11120422,
+AUTHOR = {Nikonorov, Artem and Sidorchuk, Dmitry and Odinets, Nikita and Volkov, Vladislav and Sarycheva, Anastasia and Dudenko, Ekaterina and Zhidkov, Mikhail and Nikolaev, Dmitry},
+TITLE = {HyperHazeOff: Hyperspectral Remote Sensing Image Dehazing Benchmark},
+JOURNAL = {Journal of Imaging},
+VOLUME = {11},
+YEAR = {2025},
+NUMBER = {12},
+ARTICLE-NUMBER = {422},
+URL = {https://www.mdpi.com/2313-433X/11/12/422},
+ISSN = {2313-433X},
+ABSTRACT = {Hyperspectral remote sensing images (HSIs) provide invaluable information for environmental and agricultural monitoring, yet they are often degraded by atmospheric haze, which distorts spatial and spectral content and hinders downstream analysis. Progress in hyperspectral dehazing has been limited by the absence of paired real-haze benchmarks; most prior studies rely on synthetic haze or unpaired data, restricting fair evaluation and generalization. We present HyperHazeOff, the first comprehensive benchmark for hyperspectral dehazing that unifies data, tasks, and evaluation protocols. It comprises (i) RRealHyperPDID, 110 scenes with paired real-haze and haze-free HSIs (plus RGB images), and (ii) RSyntHyperPDID, 2616 paired samples generated using a physically grounded haze formation model. The benchmark also provides agricultural field delineation and land classification annotations for downstream task quality assessment, standardized train/validation/test splits, preprocessing pipelines, baseline implementations, pretrained weights, and evaluation tools. Across six state-of-the-art methods (three RGB-based and three HSI-specific), we find that hyperspectral models trained on the widely used HyperDehazing dataset fail to generalize to real haze, while training on RSyntHyperPDID enables significant real-haze restoration by AACNet. HyperHazeOff establishes reproducible baselines and is openly available to advance research in hyperspectral dehazing.},
+DOI = {10.3390/jimaging11120422}
 }
 ```
