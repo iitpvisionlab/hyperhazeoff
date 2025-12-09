@@ -4,13 +4,16 @@ Calculate average metrics for a specified subset and the remaining samples.
 Save subset and remainder metrics to CSV files in the same directory as --metrics-csv.
 """
 
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
 
 import argparse
 import csv
 import json
-from pathlib import Path
-from typing import Dict, List, Set, Tuple
-from collections import defaultdict
+
+
+EXCLUDED_COLUMNS = {"set_name", "clean_file", "dehazed_file"}
 
 
 def normalize_identifier(identifier: str) -> str:
@@ -52,12 +55,8 @@ def check_if_in_subset(
     dehazed_flight = extract_flight_id(row["dehazed_file"])
 
     # Extract crop number from set_name (e.g., 's03c00' -> 'c00')
-    if len(set_name) >= 3:
-        crop_part = set_name[3:]
-    else:
-        crop_part = ""
+    crop_part = set_name[3:] if len(set_name) >= 3 else ""
 
-    # Check against all subset entries
     for subset_set, subset_crop, subset_clean, subset_hazed in subset_entries:
         set_match = set_name == subset_set or set_name.startswith(subset_set)
         crop_match = crop_part == subset_crop
@@ -71,23 +70,33 @@ def check_if_in_subset(
 
 
 def parse_metrics_csv(
-    metrics_path: Path, subset_entries: Set[Tuple[str, str, str, str]]
-) -> Tuple[Dict[str, List[float]], Dict[str, List[float]], List[str], List[Dict[str, str]]]:
+    metrics_path: Path,
+    subset_entries: Set[Tuple[str, str, str, str]],
+) -> Tuple[
+    Dict[str, List[float]],
+    Dict[str, List[float]],
+    List[str],
+    List[Dict[str, str]],
+    List[Dict[str, str]],
+]:
     """Parse metrics CSV and split into subset and remainder. Also return raw rows for saving."""
     subset_metrics = defaultdict(list)
     remainder_metrics = defaultdict(list)
-    metric_names = []
-    subset_rows = []
-    remainder_rows = []
+    metric_names: List[str] = []
+    subset_rows: List[Dict[str, str]] = []
+    remainder_rows: List[Dict[str, str]] = []
 
     with metrics_path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f, delimiter=";")
 
-        all_columns = reader.fieldnames
+        fieldnames = reader.fieldnames
+        if fieldnames is None:
+            raise ValueError(f"CSV file '{metrics_path}' has no headers or is empty")
+
         metric_names = [
             col
-            for col in all_columns
-            if col not in ["set_name", "clean_file", "dehazed_file"]
+            for col in fieldnames
+            if col not in EXCLUDED_COLUMNS
         ]
 
         for row in reader:
@@ -104,7 +113,13 @@ def parse_metrics_csv(
 
             target_rows.append(row)
 
-    return dict(subset_metrics), dict(remainder_metrics), metric_names, subset_rows, remainder_rows
+    return (
+        dict(subset_metrics),
+        dict(remainder_metrics),
+        metric_names,
+        subset_rows,
+        remainder_rows,
+    )
 
 
 def calculate_averages(metrics_dict: Dict[str, List[float]]) -> Dict[str, float]:
@@ -133,7 +148,8 @@ def print_results(
 
     print(f"{'Metric':<15} {'Subset':<15} {'Remainder':<15} {'All':<15}")
     print(
-        f"{'':<15} ({subset_count} samples) ({remainder_count} samples) ({subset_count + remainder_count} samples)"
+        f"{'':<15} ({subset_count} samples) ({remainder_count} samples) "
+        f"({subset_count + remainder_count} samples)"
     )
     print(f"{'-'*70}")
 
@@ -160,7 +176,10 @@ def save_results_json(
     results = {
         "subset": {"sample_count": subset_count, "metrics": subset_avg},
         "remainder": {"sample_count": remainder_count, "metrics": remainder_avg},
-        "all": {"sample_count": subset_count + remainder_count, "metrics": all_avg},
+        "all": {
+            "sample_count": subset_count + remainder_count,
+            "metrics": all_avg,
+        },
     }
 
     with output_path.open("w", encoding="utf-8") as f:
@@ -169,19 +188,25 @@ def save_results_json(
     print(f"Results saved to: {output_path}")
 
 
-def save_metrics_to_csv(output_path: Path, rows: List[Dict[str, str]]):
+def save_metrics_to_csv(
+    output_path: Path,
+    rows: List[Dict[str, str]],
+) -> None:
     """Save raw metrics rows to CSV file."""
     if not rows:
         print(f"No data to save to {output_path}")
         return
 
+    fieldnames = rows[0].keys()
     with output_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=rows[0].keys(), delimiter=";")
+        writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=";")
         writer.writeheader()
         writer.writerows(rows)
 
+    print(f"Metrics saved to: {output_path}")
 
-def main():
+
+def main() -> None:
     """Main execution function."""
     parser = argparse.ArgumentParser(
         description="Calculate average metrics for subset and remainder"
@@ -215,10 +240,8 @@ def main():
         print(f"Error: Subset CSV file not found: {args.subset_csv}")
         return
 
-    # Определяем директорию исходного файла
+    # Define output paths in the same directory as metrics-csv
     metrics_dir = args.metrics_csv.parent
-
-    # Генерируем пути по умолчанию для сохранения выборок
     output_subset_csv = metrics_dir / f"{args.metrics_csv.stem}_subset.csv"
     output_remainder_csv = metrics_dir / f"{args.metrics_csv.stem}_remainder.csv"
 
@@ -227,9 +250,14 @@ def main():
     print(f"Found {len(subset_entries)} subset entries")
 
     print(f"\nLoading metrics from: {args.metrics_csv}")
-    subset_metrics, remainder_metrics, metric_names, subset_rows, remainder_rows = parse_metrics_csv(
-        args.metrics_csv, subset_entries
-    )
+
+    (
+        subset_metrics,
+        remainder_metrics,
+        metric_names,
+        subset_rows,
+        remainder_rows,
+    ) = parse_metrics_csv(args.metrics_csv, subset_entries)
 
     subset_count = len(subset_rows)
     remainder_count = len(remainder_rows)
@@ -248,7 +276,12 @@ def main():
     all_avg = calculate_averages(dict(all_metrics))
 
     print_results(
-        subset_avg, remainder_avg, all_avg, subset_count, remainder_count, metric_names
+        subset_avg,
+        remainder_avg,
+        all_avg,
+        subset_count,
+        remainder_count,
+        metric_names,
     )
 
     if args.output_json:
@@ -261,12 +294,9 @@ def main():
             remainder_count,
         )
 
-    # Сохраняем выборки в ту же директорию, что и metrics-csv
+    # Save subset and remainder metrics
     save_metrics_to_csv(output_subset_csv, subset_rows)
-    print(f"Subset metrics saved to: {output_subset_csv}")
-
     save_metrics_to_csv(output_remainder_csv, remainder_rows)
-    print(f"Remainder metrics saved to: {output_remainder_csv}")
 
 
 if __name__ == "__main__":
