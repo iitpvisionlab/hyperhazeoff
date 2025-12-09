@@ -136,14 +136,20 @@ def nn_processing(
 
     return pred
 
-
 def run(cfg: Dict[str, Any]) -> None:
+    """Run inference per each data_root in cfg."""
+    data_roots = cfg["data_root"]
+    for dr in data_roots:
+        print(f"Processing data_root: {dr}")
+        _run_single(cfg, Path(dr))
+
+def  _run_single(cfg: Dict[str, Any], data_root: Path) -> None:
     """Run inference according to *cfg*."""
     transform: Optional[CustomTransform] = None
     device = torch.device(
         "cuda"
         if torch.cuda.is_available() and cfg["device"] in ["auto", "cuda"]
-        else cfg["device"]
+        else "cpu"
     )
 
     arch_key = cfg["arch"]
@@ -171,7 +177,7 @@ def run(cfg: Dict[str, Any]) -> None:
         )
 
     # ─── transforms ───
-    dataset = RRHPDID(cfg["data_root"], transform, format=cfg["format"])
+    dataset = RRHPDID(data_root, transform, format=cfg["format"])
 
     loader = DataLoader(
         dataset,
@@ -180,7 +186,7 @@ def run(cfg: Dict[str, Any]) -> None:
         pin_memory=True,
         shuffle=False,
     )
-
+    custom_out_dir = Path(cfg["out_dir"]) / data_root.name
     # ─── loop ───
     for g_idx, batch in enumerate(tqdm(loader, desc="Inference", unit="batch")):
         haze = batch
@@ -198,9 +204,7 @@ def run(cfg: Dict[str, Any]) -> None:
             src_list = src if isinstance(src, (tuple, list)) else [src]
             fname = src_list[0].name.replace("_hazed", "_dehazed")
 
-            out_path: Path = (
-                Path(cfg["out_dir"]) / cfg["arch"] / src_list[0].parent.name
-            )
+            out_path: Path = custom_out_dir / cfg["arch"] / src_list[0].parent.name
             out_path.mkdir(parents=True, exist_ok=True)
             save_file(cube, out_path / fname, format=cfg["format"])
 
@@ -230,6 +234,15 @@ def parse_cli() -> Dict[str, Any]:
 
     cfg_base = _load_yaml(args.pop("config"))
     cfg = _merge(cfg_base, {k: v for k, v in args.items() if v is not None})
+
+    data_root = cfg.get("data_root")
+    if isinstance(data_root, (str, Path)):
+        cfg["data_root"] = [data_root]
+    elif isinstance(data_root, list):
+        cfg["data_root"] = [Path(p) for p in data_root]
+    else:
+        raise ValueError("data_root should be a path or a list of paths")
+
 
     for field in ("data_root", "out_dir"):
         if field not in cfg or cfg[field] is None:
