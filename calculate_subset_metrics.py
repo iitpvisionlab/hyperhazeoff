@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 Calculate average metrics for a specified subset and the remaining samples.
+Save subset and remainder metrics to CSV files in the same directory as --metrics-csv.
 """
+
 
 import argparse
 import csv
@@ -70,11 +72,13 @@ def check_if_in_subset(
 
 def parse_metrics_csv(
     metrics_path: Path, subset_entries: Set[Tuple[str, str, str, str]]
-) -> Tuple[Dict[str, List[float]], Dict[str, List[float]], List[str]]:
-    """Parse metrics CSV and split into subset and remainder."""
+) -> Tuple[Dict[str, List[float]], Dict[str, List[float]], List[str], List[Dict[str, str]]]:
+    """Parse metrics CSV and split into subset and remainder. Also return raw rows for saving."""
     subset_metrics = defaultdict(list)
     remainder_metrics = defaultdict(list)
     metric_names = []
+    subset_rows = []
+    remainder_rows = []
 
     with metrics_path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f, delimiter=";")
@@ -89,6 +93,7 @@ def parse_metrics_csv(
         for row in reader:
             is_subset = check_if_in_subset(row, subset_entries)
             target_dict = subset_metrics if is_subset else remainder_metrics
+            target_rows = subset_rows if is_subset else remainder_rows
 
             for metric_name in metric_names:
                 try:
@@ -97,7 +102,9 @@ def parse_metrics_csv(
                 except (ValueError, KeyError):
                     continue
 
-    return dict(subset_metrics), dict(remainder_metrics), metric_names
+            target_rows.append(row)
+
+    return dict(subset_metrics), dict(remainder_metrics), metric_names, subset_rows, remainder_rows
 
 
 def calculate_averages(metrics_dict: Dict[str, List[float]]) -> Dict[str, float]:
@@ -162,6 +169,18 @@ def save_results_json(
     print(f"Results saved to: {output_path}")
 
 
+def save_metrics_to_csv(output_path: Path, rows: List[Dict[str, str]]):
+    """Save raw metrics rows to CSV file."""
+    if not rows:
+        print(f"No data to save to {output_path}")
+        return
+
+    with output_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=rows[0].keys(), delimiter=";")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main():
     """Main execution function."""
     parser = argparse.ArgumentParser(
@@ -196,19 +215,24 @@ def main():
         print(f"Error: Subset CSV file not found: {args.subset_csv}")
         return
 
+    # Определяем директорию исходного файла
+    metrics_dir = args.metrics_csv.parent
+
+    # Генерируем пути по умолчанию для сохранения выборок
+    output_subset_csv = metrics_dir / f"{args.metrics_csv.stem}_subset.csv"
+    output_remainder_csv = metrics_dir / f"{args.metrics_csv.stem}_remainder.csv"
+
     print(f"Loading subset specification from: {args.subset_csv}")
     subset_entries = parse_subset_specification(args.subset_csv)
     print(f"Found {len(subset_entries)} subset entries")
 
     print(f"\nLoading metrics from: {args.metrics_csv}")
-    subset_metrics, remainder_metrics, metric_names = parse_metrics_csv(
+    subset_metrics, remainder_metrics, metric_names, subset_rows, remainder_rows = parse_metrics_csv(
         args.metrics_csv, subset_entries
     )
 
-    subset_count = len(next(iter(subset_metrics.values()))) if subset_metrics else 0
-    remainder_count = (
-        len(next(iter(remainder_metrics.values()))) if remainder_metrics else 0
-    )
+    subset_count = len(subset_rows)
+    remainder_count = len(remainder_rows)
 
     print(f"Subset samples: {subset_count}")
     print(f"Remainder samples: {remainder_count}")
@@ -236,6 +260,13 @@ def main():
             subset_count,
             remainder_count,
         )
+
+    # Сохраняем выборки в ту же директорию, что и metrics-csv
+    save_metrics_to_csv(output_subset_csv, subset_rows)
+    print(f"Subset metrics saved to: {output_subset_csv}")
+
+    save_metrics_to_csv(output_remainder_csv, remainder_rows)
+    print(f"Remainder metrics saved to: {output_remainder_csv}")
 
 
 if __name__ == "__main__":
