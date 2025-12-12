@@ -7,7 +7,10 @@ The code is available in the [main branch](https://github.com/iitpvisionlab/hype
 - [x] Benchmarking pipeline on RGB and HSI versions of RRealHyperPDID *24.10.2025*
 - [x] Visualization alghorithms, models weights trained on HyperDehazing, requirements.txt *27.10.2025*
 - [x] Field delineation quality assessment *29.10.2025*
+- [ ] LULC quality assessment *19.12.2025*
 
+> [!NOTE]
+> The article contains a typo. The LULC accuracy for AIDTransformer is 62.47%; for AACNet, it's 59.86%. This will be corrected shortly.
 
 ## Datasets 
 
