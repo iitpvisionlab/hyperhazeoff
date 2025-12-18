@@ -1,5 +1,3 @@
-import numpy as np
-
 from cv2.ximgproc import guidedFilter
 from scipy.ndimage import gaussian_filter
 from skimage.color import rgb2hsv
@@ -68,8 +66,6 @@ def zhu_depth_estim(I, dx=7, dy=7, r=30, eps=0.01, gf_on=True):
     Returns:
         numpy ndarray: depth map (x_size, y_size)
     """
-    import matplotlib.pyplot as plt
-
     I_hsv = rgb2hsv(I)
     w0 = 0.121779
     w1 = 0.959710
