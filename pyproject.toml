@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hyperhazeoff"
+version = "0.0.1"
+description = "Hyperspectral Remote Sensing Image Dehazing benchmark"
+authors = [
+    { name = "Odinets Nikita", email="nodinec00@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "numpy",
+  "PyYAML",
+  "tensorflow-cpu",
+  "scipy",
+  "pandas",
+  "opencv-contrib-python-headless",
+  "timm",
+  "einops",
+  "torchinfo",
+  "scikit-learn",
+  "rasterio",
+  "scikit-image",
+  "tqdm",
+]
+
+[tool.black]
+line-length = 79
+
+[tool.setuptools]
+
+packages = [
+    "LULC",
+    "FieldDelinateQA",
+    "models",
+    "utils",
+    "datasets",
+]
+
+# [tool.setuptools.package-dir]
+# "" = "."  # Корневой пакет
