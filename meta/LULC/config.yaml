@@ -1,0 +1,22 @@
+project_name: "HyperHazeOff LULC"
+version: "1.0"
+
+classes:
+  - Crop
+  - Forest
+  - HerbaceousVegetation
+  - Highway
+  - Industrial
+  - Residential
+  - River
+  - SeaLake
+
+paths:
+  input_dir: "/workspace/hyperhazeoff/LULC/Data/source"
+  annotations_dir: "/workspace/hyperhazeoff/data/source/RRealHyperPDID_v2/markup/LULC/"
+  model_path: "./weights/LULC/9ch_8cl_2_finetune_base.h5"
+  output_dir: "./results/LULC_experiment_1"
+
+model_params:
+  input_channels: 9
+  input_size: 256
